@@ -1,0 +1,177 @@
+<html>
+<head>
+<title>{{ page.title }} | Creative Commons Resource Archive</title>
+<link rel="stylesheet" type="text/css" href="/style.css" />
+
+
+	{% if page.title == "All" %}
+
+<script>
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-2010376-29', 'auto');
+  ga('send', 'pageview');
+
+/*
+  getUrlVars :-
+
+  This function extracts the parameters from the URL of the current web page and returns them as an object with key-value pairs.
+  
+*/
+
+const getUrlVars = () =>{
+	const vars= {};
+	const hashes= window.location.href.slice(window.location.href.indexOf('?')+ 1).split('&');
+	for(const hash of hashes){ 
+		const [key , value]= hash.split('=');
+		vars[key]=value;
+	}
+	return vars;
+}
+
+/*
+    UpdateQueryString :- 
+
+    The purpose of this function is to update the query string of a given URL.
+	The function then returns the updated URL. If no changes are made to the URL, the original URL is returned.
+
+*/
+
+const UpdateQueryString = (key, value, url = window.location.href) => {
+    const re = new RegExp(`([?|&])${key}=.*?(&|#|$)(.*)`, 'gi');
+    if (re.test(url)) {
+        if (typeof value !== 'undefined' && value !== null)
+            return url.replace(re, `$1${key}=${value}$2$3`);
+        else {
+            const [baseUrl , hash] = url.split('#');
+            url = baseUrl.replace(re, '$1$3').replace(/(&|\?)$/, '');
+            if ( hash !== 'undefined' && hash !== null) 
+                url += `#${hash}`;
+            return url;
+        }
+    }
+    else {
+        if (typeof value !== 'undefined' && value !== null) {
+            const separator = url.indexOf('?') !== -1 ? '&' : '?';
+            const  [baseUrl , hash] = url.split('#');
+            url = `${baseUrl}${separator}${key}=${value}` ;
+            if ( hash !== 'undefined' && hash !== null) 
+                url += `#${hash}`;
+            return url;
+        }
+        else
+            return url;
+    }
+}
+
+document.write("<style>.thumbnailbox { display: none; }</style>");
+
+const RemoveQueryString = (param1) => {
+	const quer = param1
+	location.href=location.href.replace(/&?quer=([^&]$|[^&]*)/i, "");
+}
+
+const topic = getUrlVars()["topic"];
+const language = getUrlVars()["language"];
+const medium = getUrlVars()["medium"];
+
+if (topic === undefined && medium === undefined && language === undefined) {
+    document.write("<style>.thumbnailbox { display: block; }</style>") ;
+}
+else {
+	document.write("<style>");
+	if (topic != undefined) {document.write("."+topic)};
+	if (medium != undefined) {document.write("."+medium)};
+	if (language != undefined) {document.write("."+language)};
+	document.write("{ display: block; }</style>");
+}
+
+document.write(`<style> ${topic ? " .resourcenavtopicknown" : " .resourcenavtopicunknown"} 
+                    ${medium ? ", .resourcenavmediumknown" : ", .resourcenavmediumunknown"}
+                    ${language ? ", .resourcenavlanguageknown" : ", .resourcenavlanguageunknown"} 
+            { display: block; }
+            </style>`);
+
+</script>
+
+	{% endif %}
+
+</head>
+
+
+<body>
+
+	{% include header.html %}
+
+<h1>
+	{% unless page.title == 'Home' %}
+		<a href="/">
+	{% endunless %}
+Creative Commons Resource Archive
+	{% unless page.title == 'Home' %}
+		</a>
+	{% endunless %}
+</h1>
+
+{{content}}
+
+
+
+<div id="thumbnaillist">
+
+	{% for i in (1..16) %}
+		{% for page in site.pages %}
+			{% if page.layout == 'resource' %}
+				{% if page.featured == i %}
+					{% if page.topic contains topicfilter or topicfilter == null %}
+					{% if page.medium contains mediumfilter or mediumfilter == null %}
+					{% if page.language contains languagefilter or languagefilter == null %}
+						<div class="thumbnailbox {{ page.topic }} {{ page.medium }} {{page.language}}">
+						<a href="{{ page.permalink }}">
+						<div class="thumbnailtitle"><h3>{{ page.title }}</h3></div>
+						<div class="thumbnail" style="background-image: url('{{ page.image-thumb }}'); "></div>
+						</a>
+						<div class="thumbnailblurb">{{ page.blurb }}</div>
+						</div>
+					{% endif %}{% endif %}{% endif %}
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+	{% endfor %}
+
+{% unless page.title == 'Home' %}
+	{% for i in (1..4) %}
+		{% for page in site.pages %}
+			{% if page.layout == 'resource' %}
+				{% if page.weight == i %}
+					{% unless page.featured %}
+						{% if page.paramfilter == page.paramvalue %}
+					{% if page.topic contains topicfilter or topicfilter == null %}
+					{% if page.medium contains mediumfilter or mediumfilter == null %}
+					{% if page.language contains languagefilter or languagefilter == null %}
+							<div class="thumbnailbox {{ page.topic }} {{ page.medium }} {{page.language}}">
+							<a href="{{ page.permalink }}">
+							<div class="thumbnailtitle"><h3>{{ page.title }}</h3></div>
+							<div class="thumbnail" style="background-image: url('{{ page.image-thumb }}'); "></div>
+							</a>
+							<div class="thumbnailblurb">{{ page.blurb }}</div>
+							</div>
+					{% endif %}{% endif %}{% endif %}
+						{% endif %}
+					{% endunless %}
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+	{% endfor %}
+{% endunless %}
+
+</div>
+
+
+
+</body>
+</html>

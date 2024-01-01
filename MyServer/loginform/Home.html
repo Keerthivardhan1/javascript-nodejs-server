@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>This is Home Page </h1>
+    <label for="infoto2">infoto2: </label>
+    <input type="text" name="infoto2" id="info">
+    <button class="btn">Next Page(Home page 2)</button>
+
+    <script>
+        const btn = document.querySelector(".btn")
+        const info  = document.querySelector("#info")
+
+
+
+        btn.addEventListener("click" , ()=>{
+           const data = info.textContent;
+           postJSON(data)
+        })
+
+        document.querySelector(".btn").addEventListener("click", function() {
+            // Change the URL to the homepage2
+            window.location.href = "/homepage2";
+         });
+
+        async function postJSON(data) {
+
+            console.log("came to postJSON function");
+            try {
+                const response = await fetch("/homepage2", {
+                method: "POST", // or 'PUT'
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+                console.log("Success:", result);
+            } catch (error) {
+                console.error("Error:", error);
+            }
+         }
+    </script>
+    
+</body>
+
+</html>

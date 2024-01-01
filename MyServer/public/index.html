@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sign In</title>
+  </head>
+  <body>
+    <h1>Sign In</h1>
+    <form id="signin-form" method="post">
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" required><br><br>
+      <label for="password">Password:</label>
+      <input type="password" name="password" id="password" required><br><br>
+      <input type="submit" value="Sign In">
+    </form>
+    <button class="btn">sub</button>
+    <div id="message"></div>
+    <script>
+      const signinForm = document.getElementById('signin-form');
+      const messageDiv = document.getElementById('message');
+
+      // const email = document.querySelector("#email");
+      // const password =  document.querySelector("#password");
+
+      /*
+      
+      signinForm.addEventListener('submit', async (event) => {
+        // event.preventDefault();
+        console.log("came to  disered method");
+        const formData = new FormData(signinForm);
+        const response = await fetch('/signup', {
+          method: 'POST',
+          body: {
+            "email" : email.textContent,
+            "password" : password.textContent
+          }
+        });
+        // console.log("req " + req);
+
+        const result = await response.json();
+        if (response.ok) {
+          messageDiv.textContent = result.message;
+          // window.location.href = "/home";
+          change()
+        } else {
+          messageDiv.textContent = result.error;
+        }
+      });
+
+      */
+
+      function change() {
+        
+    
+        window.location.href = "/home";
+      
+        
+      }
+
+      signinForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const email = document.querySelector("#email").value;
+  const password =  document.querySelector("#password").value;
+
+  console.log("email " , email , "password : " , password) ;
+
+  const response = await fetch('/signup', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email, password })
+  });
+
+  const result = await response.json();
+  if (response.ok) {
+    messageDiv.textContent = result.message;
+    change()
+  } else {
+    messageDiv.textContent = result.error;
+  }
+});
+
+
+    </script>
+  </body>
+</html>
